@@ -5,15 +5,17 @@ class TodoListViewController: UITableViewController {
     
     var itemArray = [Item]()
     
-    let defaults = UserDefaults.standard
+    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Item.plist")
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         
+        
+        print(dataFilePath)
+        
         let newItem = Item()
         newItem.title = "Find Lucas"
-        newItem.done = true
         itemArray.append(newItem)
         
         let newItem2 = Item()
@@ -77,7 +79,17 @@ class TodoListViewController: UITableViewController {
             
             self.itemArray.append(newItem)
             
-            self.defaults.set(self.itemArray, forKey: "TodoListArray")
+            let encoder = PropertyListEncoder()
+            
+            do {
+                let data = try encoder.encode(self.itemArray)
+                try data.write(to: self.dataFilePath!)
+            } catch {
+                print("Error encoding item array, \(error)")
+            }
+            
+            
+            
             self.tableView.reloadData()
         }
         
