@@ -9,9 +9,7 @@ class TodoListViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
-        
+    
         print(dataFilePath)
         
         let newItem = Item()
@@ -59,7 +57,7 @@ class TodoListViewController: UITableViewController {
         
         itemArray[indexPath.row].done = !itemArray[indexPath.row].done
         
-        tableView.reloadData()
+        saveItems()
         
         tableView.deselectRow(at: indexPath, animated: true)
 
@@ -79,30 +77,36 @@ class TodoListViewController: UITableViewController {
             
             self.itemArray.append(newItem)
             
-            let encoder = PropertyListEncoder()
             
-            do {
-                let data = try encoder.encode(self.itemArray)
-                try data.write(to: self.dataFilePath!)
-            } catch {
-                print("Error encoding item array, \(error)")
-            }
+            self.saveItems()
             
-            
-            
-            self.tableView.reloadData()
         }
         
         alert.addTextField{ (alertTextField) in
             alertTextField.placeholder = "Create new item"
             textField = alertTextField
-
+        
         }
         
         alert.addAction(action)
         
         present(alert, animated: true, completion: nil)
         
+    }
+    
+    //MARK - Model manipulation Methods
+    func saveItems(){
+        
+        let encoder = PropertyListEncoder()
+        
+        do {
+            let data = try encoder.encode(itemArray)
+            try data.write(to: dataFilePath!)
+        } catch {
+            print("Error encoding item array, \(error)")
+        }
+        
+        self.tableView.reloadData()
     }
     
 }
