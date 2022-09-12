@@ -23,6 +23,11 @@ class TodoListViewController: UITableViewController {
         return cell
     }
     
+    //Mark - TableView Delegate Methods
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print(itemArray[indexPath.row])
+    }
+    
     
 
 }
