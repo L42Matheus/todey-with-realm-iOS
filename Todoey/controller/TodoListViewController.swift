@@ -9,20 +9,8 @@ class TodoListViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    
-        print(dataFilePath)
         
-        let newItem = Item()
-        newItem.title = "Find Lucas"
-        itemArray.append(newItem)
-        
-        let newItem2 = Item()
-        newItem2.title = "Find Palloma"
-        itemArray.append(newItem2)
-        
-        let newItem3 = Item()
-        newItem3.title = "Find Matheus"
-        itemArray.append(newItem3)
+        loadItems()
         
     }
     
@@ -38,8 +26,8 @@ class TodoListViewController: UITableViewController {
         let item = itemArray[indexPath.row]
         
         cell.textLabel?.text = itemArray[indexPath.row].title
-
-//        cell.accessoryType = item.done == true ? .checkmark : .none
+        
+        //        cell.accessoryType = item.done == true ? .checkmark : .none
         
         if item.done == true {
             cell.accessoryType = .checkmark
@@ -53,14 +41,14 @@ class TodoListViewController: UITableViewController {
     
     //Mark - TableView Delegate Methods
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        print(itemArray[indexPath.row])
+        //        print(itemArray[indexPath.row])
         
         itemArray[indexPath.row].done = !itemArray[indexPath.row].done
         
         saveItems()
         
         tableView.deselectRow(at: indexPath, animated: true)
-
+        
     }
     
     
@@ -77,7 +65,6 @@ class TodoListViewController: UITableViewController {
             
             self.itemArray.append(newItem)
             
-            
             self.saveItems()
             
         }
@@ -85,7 +72,7 @@ class TodoListViewController: UITableViewController {
         alert.addTextField{ (alertTextField) in
             alertTextField.placeholder = "Create new item"
             textField = alertTextField
-        
+            
         }
         
         alert.addAction(action)
@@ -107,6 +94,19 @@ class TodoListViewController: UITableViewController {
         }
         
         self.tableView.reloadData()
+    }
+    
+    func loadItems(){
+        if let data = try? Data(contentsOf: dataFilePath!) {
+            let decoder = PropertyListDecoder()
+            
+            do {
+                itemArray = try decoder.decode([Item].self, from: data)
+                
+            } catch {
+                print("Error decoding Item \(error)")
+            }
+        }
     }
     
 }
